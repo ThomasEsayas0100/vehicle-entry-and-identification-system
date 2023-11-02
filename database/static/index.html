@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Editor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+</head>
+<body>
+  <div id="tableContainer"></div>
+  <button id="saveButton">Save/Update</button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const container = document.getElementById("tableContainer");
+      const saveButton = document.getElementById("saveButton");
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('GET', '/data', true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+
+          // Extract column names from dictionary keys
+          const columnNames = Object.keys(data[0]);
+
+          const hot = new Handsontable(container, {
+            data: data,
+            rowHeaders: true,
+            colHeaders: columnNames, // Use column names for headers
+            contextMenu: true,
+            manualRowResize: true,
+            manualColumnResize: true,
+            minSpareRows: 1, // Allow adding new rows at the end
+            minSpareCols: 1, // Allow adding new columns at the end
+            // Add more options and customize as needed
+          });
+
+          saveButton.addEventListener("click", function () {
+            const data = hot.getData();
+            const xhrUpdate = new XMLHttpRequest();
+
+            xhrUpdate.open('POST', '/update', true);
+            xhrUpdate.setRequestHeader('Content-Type', 'application/json');
+
+            // Show "Processing..." alert
+            alert("Save is processing...");
+
+            xhrUpdate.onreadystatechange = function () {
+              if (xhrUpdate.readyState === 4) {
+                if (xhrUpdate.status === 200) {
+                  // Show "Successfully saved" alert
+                  alert("Data saved/updated successfully!");
+                } else {
+                  // Show error alert
+                  alert("Error occurred while saving data.");
+                }
+              }
+            };
+
+            var updatedData = [];
+            for (let row = 0; row < hot.countRows(); row++) {
+              const rowData = {};
+              for (let col = 0; col < columnNames.length; col++) {
+                rowData[columnNames[col]] = data[row][col];
+              }
+              updatedData.push(rowData);
+            }
+            xhrUpdate.send(JSON.stringify(updatedData));
+          });
+        }
+      };
+
+      xhr.send();
+    });
+  </script>
+</body>
+</html>

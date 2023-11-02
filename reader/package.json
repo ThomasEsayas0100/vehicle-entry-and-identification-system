@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@google-cloud/vision": "^3.1.4",
+    "child_process": "^1.0.2",
+    "firebase-admin": "^11.11.0",
+    "dotenv@16.3.1": "^16.3.1"
+  }
+}
