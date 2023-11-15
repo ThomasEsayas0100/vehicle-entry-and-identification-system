@@ -37,5 +37,4 @@ The Raspberry Pi is not currently capable of controlling doors/gates. In a futur
 ## <b>4. Other Notes</b>
 
 This project is far from complete and is not implementable. This project serves far more as a proof of concept. On top of the considerations listed, weatherproofing, camera quality/stability, power, and more would have to be considered in the final revision of this project.
-"# vehicle-entry-and-identification-system" 
-"# vehicle-entry-and-identification-system" 
+
